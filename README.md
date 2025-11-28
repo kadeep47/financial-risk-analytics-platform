@@ -14,3 +14,20 @@ We recommend using Conda:
 conda env create -f environment.yml
 conda activate financial_risk
 ```
+
+## Running the Pipeline
+Simply run:
+```bash
+chmod +x run.sh
+./run.sh
+```
+
+## Running Tests
+```bash
+pytest tests/
+```
+
+## Future Improvements
+- Integrate FastAPI server for on-demand stress testing.
+- Replace CSV outputs for engine bridging with raw PyArrow bindings.
+- Fully expand date math instead of generic period assumptions.
