@@ -1,0 +1,14 @@
+name: financial_risk
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.10
+  - pandas
+  - numpy
+  - pydantic
+  - fastparquet
+  - pyarrow
+  - pytest
+  - cmake
+  - gxx_linux-64
