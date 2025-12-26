@@ -61,3 +61,66 @@ std::vector<Cashflow> CashflowCalculator::calculate_bond_cashflows(const Instrum
             principal,
             current_coupon,
             principal + current_coupon
+        });
+    }
+    
+    return flows;
+}
+
+std::vector<Cashflow> CashflowCalculator::calculate_deposit_cashflows(const Instrument& inst) {
+    std::vector<Cashflow> flows;
+    // Simple maturity deposit
+    int periods_per_year = (inst.payment_frequency == PaymentFrequency::MONTHLY) ? 12 : 4;
+    int n = 1 * periods_per_year; // Approx 1 yr
+    
+    double interest = inst.notional * inst.interest_rate; // simple interest
+    flows.push_back({
+        inst.instrument_id,
+        "period_" + std::to_string(n),
+        inst.notional,
+        interest,
+        inst.notional + interest
+    });
+    
+    return flows;
+}
+
+std::vector<Cashflow> CashflowCalculator::calculate_all(const std::vector<Instrument>& instruments) {
+    std::vector<Cashflow> all_flows;
+    
+    // Very basic multithreading
+    const size_t num_threads = std::thread::hardware_concurrency();
+    std::vector<std::future<std::vector<Cashflow>>> futures;
+    
+    auto process_batch = [](std::vector<Instrument> batch) {
+        std::vector<Cashflow> local_flows;
+        for (const auto& inst : batch) {
+            std::vector<Cashflow> flows;
+            if (inst.instrument_type == InstrumentType::LOAN) {
+                flows = calculate_loan_cashflows(inst);
+            } else if (inst.instrument_type == InstrumentType::BOND) {
+                flows = calculate_bond_cashflows(inst);
+            } else {
+                flows = calculate_deposit_cashflows(inst);
+            }
+            local_flows.insert(local_flows.end(), flows.begin(), flows.end());
+        }
+        return local_flows;
+    };
+
+    size_t batch_size = instruments.size() / num_threads;
+    if (batch_size == 0) batch_size = instruments.size();
+
+    for (size_t i = 0; i < instruments.size(); i += batch_size) {
+        auto end = std::min(i + batch_size, instruments.size());
+        std::vector<Instrument> batch(instruments.begin() + i, instruments.begin() + end);
+        futures.push_back(std::async(std::launch::async, process_batch, batch));
+    }
+
+    for (auto& f : futures) {
+        auto res = f.get();
+        all_flows.insert(all_flows.end(), res.begin(), res.end());
+    }
+
+    return all_flows;
+}
