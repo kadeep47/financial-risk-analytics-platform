@@ -37,3 +37,43 @@ def generate_synthetic_data(num_records: int = 1000) -> pd.DataFrame:
         start_days_ago = np.random.randint(0, 365)
         start_d = date.today() - timedelta(days=start_days_ago)
         
+        # Tenure uniform range: 1 to 30 years
+        tenure_years = np.random.randint(1, 30)
+        maturity_d = start_d + timedelta(days=tenure_years * 365)
+        
+        raw_dict = {
+            "instrument_id": str(uuid.uuid4()),
+            "instrument_type": inst_type,
+            "notional": notional,
+            "interest_rate": rate,
+            "start_date": start_d,
+            "maturity_date": maturity_d,
+            "payment_frequency": np.random.choice(frequencies),
+            "customer_segment": np.random.choice(segments)
+        }
+        
+        # Validate data
+        validated = Instrument(**raw_dict)
+        records.append(validated.model_dump())
+        
+    return pd.DataFrame(records)
+
+def main():
+    print("Generating synthetic financial data...")
+    df = generate_synthetic_data(num_records=1000)
+    
+    # Ensure processed and raw directories exist
+    os.makedirs("data/raw", exist_ok=True)
+    
+    out_path = "data/raw/raw_instruments.csv"
+    df.to_csv(out_path, index=False)
+    print(f"Successfully generated {len(df)} records to {out_path}.")
+    
+    try:
+        df.to_parquet("data/raw/raw_instruments.parquet", index=False)
+        print("Successfully generated parquet format as well.")
+    except Exception as e:
+        print(f"Skipping parquet export (requires pyarrow or fastparquet): {e}")
+
+if __name__ == "__main__":
+    main()
