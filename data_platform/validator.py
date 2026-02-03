@@ -21,3 +21,26 @@ def validate_dataset(df: pd.DataFrame) -> pd.DataFrame:
             # Convert pandas timestamp to date if necessary
             data_dict = row.to_dict()
             if isinstance(data_dict['start_date'], pd.Timestamp):
+                data_dict['start_date'] = data_dict['start_date'].date()
+            elif isinstance(data_dict['start_date'], str):
+                data_dict['start_date'] = pd.to_datetime(data_dict['start_date']).date()
+                
+            if isinstance(data_dict['maturity_date'], pd.Timestamp):
+                data_dict['maturity_date'] = data_dict['maturity_date'].date()
+            elif isinstance(data_dict['maturity_date'], str):
+                data_dict['maturity_date'] = pd.to_datetime(data_dict['maturity_date']).date()
+                
+            validated = Instrument(**data_dict)
+            valid_records.append(validated.model_dump())
+        except ValidationError as e:
+            errors += 1
+            print(f"Validation error at row {idx}: {e}")
+            
+    print(f"Validation complete: {len(valid_records)} valid, {errors} errors.")
+    return pd.DataFrame(valid_records)
+
+if __name__ == "__main__":
+    from shared.utils.io import load_dataframe, save_dataframe
+    df = load_dataframe("data/raw/raw_instruments.csv", format="csv")
+    cleaned_df = validate_dataset(df)
+    save_dataframe(cleaned_df, "data/processed/clean_instruments.parquet", format="parquet")
