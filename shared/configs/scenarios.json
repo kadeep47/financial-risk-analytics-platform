@@ -1,1 +1,8 @@
 {
+    "baseline": {
+        "deposit_runoff": 0.0,
+        "loan_default": 0.0,
+        "interest_rate_shock": 0.0
+    },
+    "mild_stress": {
+        "deposit_runoff": 0.1,
