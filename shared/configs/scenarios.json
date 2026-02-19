@@ -6,3 +6,12 @@
     },
     "mild_stress": {
         "deposit_runoff": 0.1,
+        "loan_default": 0.05,
+        "interest_rate_shock": 0.01
+    },
+    "severe_stress": {
+        "deposit_runoff": 0.3,
+        "loan_default": 0.15,
+        "interest_rate_shock": 0.03
+    }
+}
