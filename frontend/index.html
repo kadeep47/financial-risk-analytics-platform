@@ -15,3 +15,72 @@
             <button class="nav-btn" data-target="m-data">Data Platform</button>
             <button class="nav-btn" data-target="m-cashflow">Cashflow Engine</button>
             <button class="nav-btn" data-target="m-reporting">Reporting Engine</button>
+            <button class="nav-btn" data-target="m-stress">Stress Testing</button>
+        </nav>
+    </div>
+    
+    <div class="main-content">
+        <!-- Overview -->
+        <section id="overview" class="view-section active">
+            <div class="header">
+                <div>
+                    <h1>Pipeline Overview</h1>
+                    <p>End-to-End Execution of the Financial Risk Analytics System.</p>
+                </div>
+                <button id="run-all-btn" class="primary-btn">Run Complete Pipeline</button>
+            </div>
+            
+            <div class="node-graph">
+                <div class="node" id="node-data-platform">
+                    <div class="circle"></div>
+                    <span>Data Platform</span>
+                </div>
+                <div class="arrow">→</div>
+                <div class="node" id="node-cashflow-engine">
+                    <div class="circle"></div>
+                    <span>Cashflow Engine</span>
+                </div>
+                <div class="arrow">→</div>
+                <div class="node" id="node-reporting-engine">
+                    <div class="circle"></div>
+                    <span>Reporting Engine</span>
+                </div>
+                <div class="arrow">→</div>
+                <div class="node" id="node-stress-testing">
+                    <div class="circle"></div>
+                    <span>Stress Testing</span>
+                </div>
+            </div>
+            
+            <div class="terminal">
+                <div class="terminal-header">Execution Logs</div>
+                <pre class="terminal-body" id="global-log">Awaiting execution...</pre>
+            </div>
+        </section>
+
+        <!-- Data Platform -->
+        <section id="m-data" class="view-section">
+            <div class="header">
+                <div>
+                    <h1>Data Platform</h1>
+                    <p>Validation and generation of synthetic financial instruments.</p>
+                </div>
+                <div class="btn-group">
+                    <button class="secondary-btn" id="run-data-gen-btn">Run Generator</button>
+                    <button class="secondary-btn" id="run-data-val-btn">Run Validation</button>
+                </div>
+            </div>
+            <div class="card auto-scroll">
+                <h3>Clean Instruments Source</h3>
+                <div class="table-actions">
+                    <button id="load-data-btn" class="tertiary-btn">Reload Data</button>
+                </div>
+                <table id="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Type</th>
+                            <th>Notional</th>
+                            <th>Rate</th>
+                            <th>Maturity</th>
+                            <th>Segment</th>
