@@ -84,3 +84,90 @@
                             <th>Rate</th>
                             <th>Maturity</th>
                             <th>Segment</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Cashflow Engine -->
+        <section id="m-cashflow" class="view-section">
+            <div class="header">
+                <div>
+                    <h1>Cashflow Engine</h1>
+                    <p>High-performance multi-threaded C++ computation of cashflows.</p>
+                </div>
+                <button class="secondary-btn" id="run-cashflow-btn">Run Engine</button>
+            </div>
+            <div class="card auto-scroll">
+                <h3>Cashflow Outputs</h3>
+                <div class="table-actions">
+                    <button id="load-cf-btn" class="tertiary-btn">Reload Cashflows</button>
+                </div>
+                <table id="cf-table">
+                    <thead>
+                        <tr>
+                            <th>Instrument ID</th>
+                            <th>Date</th>
+                            <th>Principal</th>
+                            <th>Interest</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Reporting Engine -->
+        <section id="m-reporting" class="view-section">
+            <div class="header">
+                <div>
+                    <h1>Reporting Engine</h1>
+                    <p>Calculation of LCR & NSFR indicators.</p>
+                </div>
+                <button class="secondary-btn" id="run-reporting-btn">Generate Reports</button>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Liquidity Coverage Ratio (LCR)</h3>
+                    <table id="lcr-table" class="mini-table">
+                        <thead><tr><th>Metric</th><th>Ratio</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="card">
+                    <h3>Net Stable Funding Ratio (NSFR)</h3>
+                    <table id="nsfr-table" class="mini-table">
+                        <thead><tr><th>Metric</th><th>Ratio</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stress Testing -->
+        <section id="m-stress" class="view-section">
+            <div class="header">
+                <div>
+                    <h1>Stress Testing</h1>
+                    <p>Macro-scenarios logic for testing LCR/NSFR impact.</p>
+                </div>
+                <button class="secondary-btn" id="run-stress-btn">Run Scenarios</button>
+            </div>
+            <div class="card">
+                <h3>Scenario Results</h3>
+                <div class="table-actions">
+                    <button id="load-stress-btn" class="tertiary-btn">Reload Results</button>
+                </div>
+                <div id="stress-cards-container" class="grid-2">
+                    <!-- populated via js -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
