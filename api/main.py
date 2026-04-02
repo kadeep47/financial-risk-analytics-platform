@@ -52,3 +52,58 @@ def run_cashflow():
     if res["status"] == "error":
         raise HTTPException(status_code=500, detail=res["message"])
     return res
+
+@app.post("/api/run/reporting")
+def run_reporting():
+    res = run_script("reporting_engine/liquidity_metrics.py")
+    if res["status"] == "error":
+        raise HTTPException(status_code=500, detail=res["message"])
+    return res
+
+@app.post("/api/run/stress-testing")
+def run_stress():
+    res = run_script("stress_testing/scenario_runner.py")
+    if res["status"] == "error":
+        raise HTTPException(status_code=500, detail=res["message"])
+    return res
+
+@app.get("/api/data/raw-instruments")
+def get_raw_instruments():
+    try:
+        df = pd.read_csv("data/raw/raw_instruments.csv")
+        return {"data": df.head(50).to_dict(orient="records"), "total": len(df)}
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/data/clean-instruments")
+def get_clean_instruments():
+    try:
+        df = pd.read_parquet("data/processed/clean_instruments.parquet")
+        return {"data": df.head(50).to_dict(orient="records"), "total": len(df)}
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/data/cashflows")
+def get_cashflows():
+    try:
+        df = pd.read_parquet("data/processed/cashflows.parquet")
+        return {"data": df.head(50).to_dict(orient="records"), "total": len(df)}
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/data/reports")
+def get_reports():
+    try:
+        lcr = pd.read_csv("data/processed/liquidity_report.csv").to_dict(orient="records")
+        nsfr = pd.read_csv("data/processed/nsfr_report.csv").to_dict(orient="records")
+        return {"lcr": lcr, "nsfr": nsfr}
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/data/stress-results")
+def get_stress_results():
+    try:
+        with open("data/processed/stress_results.json", "r") as f:
+            return json.load(f)
+    except Exception as e:
+        return {"error": str(e)}
