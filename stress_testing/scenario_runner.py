@@ -32,3 +32,38 @@ def apply_stress(cashflows: pd.DataFrame, instruments: pd.DataFrame, scenario: S
     return cf_stressed, inst_stressed
 
 def run_scenarios():
+    print("Running Stress Scenarios...")
+    
+    with open("shared/configs/scenarios.json", "r") as f:
+        config = json.load(f)
+        
+    try:
+        cashflows = load_dataframe("data/processed/cashflows.parquet", format="parquet")
+        instruments = load_dataframe("data/processed/clean_instruments.parquet", format="parquet")
+    except Exception:
+        cashflows = load_dataframe("data/processed/cashflows.csv", format="csv")
+        instruments = load_dataframe("data/processed/clean_instruments.csv", format="csv")
+
+    results = {}
+    
+    for name, params in config.items():
+        scenario = StressScenario(**params)
+        cf_s, inst_s = apply_stress(cashflows, instruments, scenario)
+        
+        # Calculate impacts
+        lcr_report = calculate_lcr(cf_s, inst_s)
+        
+        results[name] = {
+            "lcr_proxy": lcr_report['Ratio'].iloc[0],
+            "net_outflows": lcr_report['Net Outflows (30D)'].iloc[0]
+        }
+        print(f"Scenario '{name}' -> LCR Proxy: {results[name]['lcr_proxy']:.2f}, Net Outflows: {results[name]['net_outflows']:.2f}")
+
+    os.makedirs("data/processed", exist_ok=True)
+    with open("data/processed/stress_results.json", "w") as f:
+        json.dump(results, f, indent=4)
+        
+    print("Stress test complete. Results saved to data/processed/stress_results.json")
+
+if __name__ == "__main__":
+    run_scenarios()
